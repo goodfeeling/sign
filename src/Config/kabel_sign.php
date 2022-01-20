@@ -9,6 +9,7 @@
  * Api统一签名加密校验
  */
 return [
+    'default'=> 'kabel',
     'kabel' => [ // 卡百利
         'is_open' => env('SIGN_KABEL_IS_OPEN', false), // 是否开放签名
         'timeout' => env('SIGN_KABEL_TIMEOUT', 3000), // 签名过期时间 (毫秒)
