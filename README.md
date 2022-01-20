@@ -1,2 +1,53 @@
-# sign
-The Api signature, data encryption
+## 安装
+
+1.  下载组件包  
+composer require yzw/kabel-sign
+2.  发布配置文件
+php artisan vendor:publish --provider="kabel\Sign\SignServiceProvider"
+kabel_auth.php: auth配置文件
+kabel_auth_cache.php: redis缓存链接配置文件
+## 使用
+
+1.在项目根目录/kabel/Kernel/HttpKernel.php中绑定 \kabel\Sign\Middleware\SignServiceProvider::class 中间件
+
+
+ /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array
+     */
+    protected $routeMiddleware = [
+        'auth' => \Kabel\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \Kabel\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
+        // 验证签名
+        'verify.sign' => \kabel\Sign\Middleware\SignMiddleware::class,
+    ];
+
+2.路由绑定中间件
+
+    Route::middleware('verify.sign')->group(function () {
+        //需要登录的路由组
+    });
+
+3.请求外部项目的接口时引入Kabel\Sign\Services\SignService
+    use Kabel\Sign\Services\SignService;
+    use 
+    class test
+    {
+        public function test()
+        {
+           // 发送请求
+           $params = ["user_id":1001,"company_id":2];
+           
+        }
+    }

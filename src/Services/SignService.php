@@ -18,17 +18,21 @@ class SignService implements SignServiceInterface
 {
     /**
      * 设置参数
-     * @param $params
+     * @param  array  $params
      * @param  $signType
      * @return mixed
+     * @throws CustomException
      */
-    public static function setParams(array &$params, $signType){
+    public static function setParams(array &$params, $signType = null){
         //获取appSecret
         $config = config("kabel_sign.$signType");
+        if (!$config) {
+            throw new \RuntimeException('请配置签名信息' . $signType);
+        }
         $params['t'] = time();
         $params['appkey'] = $config['app_key'];
         // 签名
-        $params['sign'] = genSign($params, $config['secret']);
+        $params['sign'] = (new SignService)->makeSignature($params, $config['secret']);
         // 生成随机数防止重放攻击
         $params['nonce'] = app(CryptoService::class)->createRandomStr();
         return $params;
