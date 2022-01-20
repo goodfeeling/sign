@@ -1,0 +1,24 @@
+{
+    "name": "kabel/sign",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Kabel\\Sign\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "yaozhiwen",
+            "email": "929089994@qq.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Kabel\\Sign\\SignServiceProvide"
+            ]
+        }
+    },
+    "require": {}
+}
