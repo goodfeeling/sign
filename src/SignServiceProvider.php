@@ -35,6 +35,8 @@ class SignServiceProvider extends ServiceProvider
 
     public function register()
     {
+        // 发布模板文件
+        $this->registerPublishing();
         // 加载配置文件
         $this->_loadConfig();
         // 服务注册
@@ -64,6 +66,21 @@ class SignServiceProvider extends ServiceProvider
     private function _getConfigPath(): string
     {
         return __DIR__.'/Config/';
+    }
+
+
+    /**
+     * 发布模板文件
+     * @author lwz
+     */
+    protected function registerPublishing()
+    {
+        // 只有在 console 模式才执行
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/Config/kabel_sign.php' => $this->app->basePath('Config').'/kabel_sign.php',
+            ]);
+        }
     }
 
 }
