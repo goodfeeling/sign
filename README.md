@@ -72,7 +72,6 @@ kabel_sign.php: sign配置文件
 ## 前端使用
 >> POST请求下使用
 ```html
-
 <!doctype html>
 <html>
 
