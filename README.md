@@ -5,12 +5,12 @@ composer require yzw/kabel-sign
 ```
 2.  发布配置文件
 ```
-php artisan vendor:publish --provider="kabel\Sign\SignServiceProvider"
+php artisan vendor:publish --provider="Kabel\Sign\SignServiceProvider"
 kabel_sign.php: sign配置文件
 ```
 3. 配置.env文件
 ## 使用
-1.在项目根目录/kabel/Kernel/HttpKernel.php中绑定 \kabel\Sign\Middleware\SignServiceProvider::class 中间件
+1.在项目根目录/Kabel/Kernel/HttpKernel.php中绑定 \Kabel\Sign\Middleware\SignServiceProvider::class 中间件
 
 ```
  /**
@@ -32,7 +32,7 @@ kabel_sign.php: sign配置文件
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         // 验证签名
-        'verify.sign' => \kabel\Sign\Middleware\SignMiddleware::class,
+        'verify.sign' => \Kabel\Sign\Middleware\SignMiddleware::class,
     ];
 ```
 
