@@ -86,7 +86,7 @@ kabel_sign.php: sign配置文件
             let keys = Object.keys(params);
             keys.sort();
             keys.forEach(function(key) {
-                if (Array.isArray(params[key])) {
+                if (Array.isArray(params[key]) || (params[key] instanceof Object)) {
                     sign+= key;
                     sign+= loopArraySign(params[key]);
                 }
@@ -109,15 +109,23 @@ kabel_sign.php: sign配置文件
             return str;
         }
         // secret
-        let secret = '123'; // 密钥
+        let secret = '11'; // 密钥
         let sendData = {
             t:Date.parse(new Date())/1000,// 获取时间时间戳
             nonce:createRandomStr(),// 生成随机数
-            appkey:"appkey",// appkey
+            appkey:"11",// appkey
+            "company_id":2,
+            "app_id" : 1,
+            "user_ids":[1001],
+            "wxtpl":{
+                "keyword":[11,2,3]
+            }
         };
-        console.log(loopArraySign(sendData))
-        sendData.sign = md5(loopArraySign(sendData)+secret).toUpperCase();// 签名跟后端协调签名算法
-        $.post("xxxx",sendData,
+        let sign = loopArraySign(sendData)+secret;
+        sendData.sign = md5(sign).toUpperCase();// 签名跟后端协调签名算法
+        console.log(sign)
+
+        $.post("/framework/push/index/send",sendData,
             function (data, status) {
                 alert("数据: \n" + data + "\n状态: " + status);
             });
