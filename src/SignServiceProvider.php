@@ -63,7 +63,7 @@ class SignServiceProvider extends ServiceProvider
      */
     private function _getConfigPath(): string
     {
-        return __DIR__.'/../Config/';
+        return __DIR__.'/Config/';
     }
 
 }
