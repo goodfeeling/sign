@@ -116,7 +116,7 @@ kabel_sign.php: sign配置文件
             appkey:"appkey",// appkey
         };
         console.log(loopArraySign(sendData))
-        sendData.sign = md5(loopArraySign(sendData)+secret).toUpperCase();// 签名
+        sendData.sign = md5(loopArraySign(sendData)+secret).toUpperCase();// 签名跟后端协调签名算法
         $.post("xxxx",sendData,
             function (data, status) {
                 alert("数据: \n" + data + "\n状态: " + status);
