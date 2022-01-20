@@ -21,4 +21,5 @@ class ErrorCode
     public const DATA_ERROR = ['数据有误！',1908];
     public const APP_KEY_ERROR = ['Appkey有误！',1908];
     public const CRYPTO_ERROR = ['数据解密失败！',1909];
+    public const NONCE_ERROR = ['nonce is error！',1910];
 }
