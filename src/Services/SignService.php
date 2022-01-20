@@ -39,6 +39,7 @@ class SignService implements SignServiceInterface
     }
 
     /**
+     * 构建签名
      * @param  array  $params
      *  必填参数:
      *      timestamp: 时间戳
@@ -65,7 +66,7 @@ class SignService implements SignServiceInterface
     }
 
     /**
-     * 递归构建参数
+     * 递归生成参数
      * @param  array  $params
      * @param  int  $rfc
      * @return string

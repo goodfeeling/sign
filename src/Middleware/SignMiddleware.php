@@ -57,6 +57,11 @@ class SignMiddleware
             if ($newSign != $sign) {
                 throw new CustomException(ErrorCode::SIGN_ERROR);
             }
+            // 去掉没有用的参数
+            $request->offsetUnset('t');
+            $request->offsetUnset('sign');
+            $request->offsetUnset('appkey');
+            $request->offsetUnset('nonce');
         }
 
         return $next($request);
