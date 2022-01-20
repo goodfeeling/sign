@@ -7,14 +7,10 @@
  */
 
 
-namespace Kabel\Sign\Providers;
+namespace Kabel\Sign;
 
 
-use Kabel\Sign\Interfaces\CryptoServiceInterface;
-use Kabel\Sign\Interfaces\RpcRequestInterface;
 use Kabel\Sign\Interfaces\SignServiceInterface;
-use Kabel\Sign\Services\CryptoService;
-use Kabel\Sign\Services\HttpRequest;
 use Kabel\Sign\Services\SignService;
 use Illuminate\Support\ServiceProvider;
 
@@ -67,7 +63,7 @@ class SignServiceProvider extends ServiceProvider
      */
     private function _getConfigPath(): string
     {
-        return __DIR__ . '/../Config/';
+        return __DIR__.'/../Config/';
     }
 
 }
