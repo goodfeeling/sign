@@ -28,7 +28,8 @@ class SignMiddleware
      */
     public function handle(Request $request, \Closure $next)
     {
-        if (config('kabel_sign.is_open')) {
+        $appName = env('APP_NAME');
+        if (config("kabel_sign.$appName.is_open")) {
             $param = request()->toArray();
             $timestamp = $param['t'] ?? '';
             $sign = $param['sign'] ?? '';
@@ -48,7 +49,7 @@ class SignMiddleware
                 throw new CustomException(ErrorCode::SIGN_NOT_FOUND);
             }
             // 签名时效检验
-            if ((time() - $timestamp) > config('kabel_sign.timeout')) {
+            if ((time() - $timestamp) > config("kabel_sign.$appName.timeout")) {
                 throw new CustomException(ErrorCode::SIGN_TIMEOUT);
             }
             // 去掉签名
