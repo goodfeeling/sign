@@ -32,12 +32,13 @@ class SignService implements SignServiceInterface
         }
         $params['t'] = time();
         $params['appkey'] = $config['app_key'];
-        // 签名
-        $params['sign'] = (new SignService)->makeSignature($params,$signType);
         // 生成随机数防止重放攻击
         $params['nonce'] = app(CryptoService::class)->createRandomStr();
         // 签名类型
         $params['sign_type'] = $signType;
+        // 签名
+        $params['sign'] = (new SignService)->makeSignature($params,$signType);
+
         return $params;
     }
 
