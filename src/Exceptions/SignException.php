@@ -10,7 +10,7 @@
 namespace Kabel\Sign\Exceptions;
 
 
-class CustomException extends \Exception
+class SignException extends \Exception
 {
     public function __construct(array $errInfo)
     {

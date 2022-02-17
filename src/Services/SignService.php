@@ -12,7 +12,7 @@ namespace Kabel\Sign\Services;
 
 use Kabel\Sign\Constants\ErrorCode;
 use Kabel\Sign\Enums\ClientEnum;
-use Kabel\Sign\Exceptions\CustomException;
+use Kabel\Sign\Exceptions\SignException;
 use Kabel\Sign\Interfaces\SignServiceInterface;
 
 class SignService implements SignServiceInterface
@@ -22,14 +22,14 @@ class SignService implements SignServiceInterface
      * @param  array  $params
      * @param  $signType
      * @return mixed
-     * @throws CustomException
+     * @throws SignException
      */
     public static function setParams(array &$params, $signType = null){
         $signType = $signType ?:config("kabel_sign.default");
         //获取appSecret
         $config = config("kabel_sign.$signType");
         if (!$config) {
-            throw new \RuntimeException('请配置签名信息' . $signType);
+            throw new SignException(ErrorCode::SIGN_CONFIG_NOT_FOND);
         }
         $params['t'] = time();
         $params['appkey'] = $config['app_key'];
@@ -50,12 +50,12 @@ class SignService implements SignServiceInterface
      * @param string $signType
      *  签名类型
      * @return false|string
-     * @throws CustomException
+     * @throws SignException
      */
     public function makeSignature($params = array(),string $signType = 'kabel')
     {
         if (!is_array($params)) {
-            throw new CustomException(ErrorCode::PARAMS_ERROR);
+            throw new SignException(ErrorCode::PARAMS_ERROR);
         }
         //获取appSecret
         $config = config("kabel_sign.$signType");

@@ -11,7 +11,7 @@ namespace Kabel\Sign\Middleware;
 
 
 use Kabel\Sign\Constants\ErrorCode;
-use Kabel\Sign\Exceptions\CustomException;
+use Kabel\Sign\Exceptions\SignException;
 use Kabel\Sign\Services\SignService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -23,10 +23,11 @@ class SignMiddleware
      * @param  \Closure  $next
      * @param  string  $signType
      * @return mixed
-     * @throws CustomException
+     * @throws SignException
      */
-    public function handle(Request $request, \Closure $next,$signType = 'kabel')
+    public function handle(Request $request, \Closure $next,$signType = null)
     {
+        $signType = $signType ?:config("kabel_sign.default");
         $param = request()->toArray();
         $config = config("kabel_sign");
         if (!empty($param['skip_sign_rule']) && $config['skip_sign_rule'] == $param['skip_sign_rule']) {
@@ -39,36 +40,36 @@ class SignMiddleware
                 $appkey = $param['appkey'] ?? '';
                 $nonce = $param['nonce'] ?? '';
                 if (empty($nonce)) {
-                    throw new CustomException(ErrorCode::NONCE_NOT_FOUND);
+                    throw new SignException(ErrorCode::NONCE_NOT_FOUND);
                 }
                 // 校验密钥是否已使用
                 $cacheKey = $this->getCacheKey($nonce);
                 $isPass = Cache::get($cacheKey);
                 if (!empty($isPass)) {
-                    throw new CustomException(ErrorCode::NONCE_ERROR);
+                    throw new SignException(ErrorCode::NONCE_ERROR);
                 }
                 // 将随机值设置60秒过期,防止频繁用同一个随机值发起请求
                 Cache::put($cacheKey, 1, 60);
                 if (empty($timestamp)) {
-                    throw new CustomException(ErrorCode::TIMESTAME_ERROR);
+                    throw new SignException(ErrorCode::TIMESTAME_ERROR);
                 }
                 if (empty($appkey)) {
-                    throw new CustomException(ErrorCode::APP_KEY_ERROR);
+                    throw new SignException(ErrorCode::APP_KEY_ERROR);
                 }
                 // 没有签名
                 if (empty($sign)) {
-                    throw new CustomException(ErrorCode::SIGN_NOT_FOUND);
+                    throw new SignException(ErrorCode::SIGN_NOT_FOUND);
                 }
                 // 签名时效检验
                 if ((time() - $timestamp) > config("kabel_sign.$signType.timeout")) {
-                    throw new CustomException(ErrorCode::SIGN_TIMEOUT);
+                    throw new SignException(ErrorCode::SIGN_TIMEOUT);
                 }
                 // 去掉签名
                 unset($param['sign']);
                 $newSign = app(SignService::class)->makeSignature($param,$signType);
                 // appkey是否匹配并且签名匹配
-                if (config("kabel_sign.$signType.appkey") == $appkey && $newSign != $sign) {
-                    throw new CustomException(ErrorCode::SIGN_ERROR);
+                if ($newSign != $sign) {
+                    throw new SignException(ErrorCode::SIGN_ERROR);
                 }
                 // 去掉没有用的参数
                 $request->offsetUnset('t');

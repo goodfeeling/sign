@@ -11,7 +11,7 @@ namespace Kabel\Sign\Middleware;
 
 
 use Kabel\Sign\Constants\ErrorCode;
-use Kabel\Sign\Exceptions\CustomException;
+use Kabel\Sign\Exceptions\SignException;
 use Kabel\Sign\Library\Aes;
 use Kabel\Sign\Library\Rsa;
 use Illuminate\Http\Request;
@@ -30,7 +30,7 @@ class CryptoMiddleware
      * @param  Request  $request
      * @param  \Closure  $next
      * @return mixed
-     * @throws CustomException
+     * @throws SignException
      */
     public function handle(Request $request, \Closure $next)
     {
@@ -45,13 +45,13 @@ class CryptoMiddleware
             // 获取加密的数据
             $encrypted = $request->input('encrypted_data','');
             if(!is_string($encrypted)) {
-                throw new CustomException(ErrorCode::DATA_ERROR);
+                throw new SignException(ErrorCode::DATA_ERROR);
             }
             $iv =  $request->input('iv','');
             // 解密密文
             $result = (new Aes($secret,$iv))->decrypt($encrypted);
             if (empty($result)) {
-                throw new CustomException(ErrorCode::CRYPTO_ERROR);
+                throw new SignException(ErrorCode::CRYPTO_ERROR);
             }
             // 去掉没有用的参数
             $request->offsetUnset('encrypted_data');

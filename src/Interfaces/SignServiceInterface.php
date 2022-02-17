@@ -10,7 +10,7 @@
 namespace Kabel\Sign\Interfaces;
 
 
-use Kabel\Sign\Exceptions\CustomException;
+use Kabel\Sign\Exceptions\SignException;
 
 interface SignServiceInterface
 {
@@ -23,7 +23,7 @@ interface SignServiceInterface
      * @param string $signType
      *  签名类型
      * @return false|string
-     * @throws CustomException
+     * @throws SignException
      */
     public function makeSignature($params = array(),string $signType);
 
