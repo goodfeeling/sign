@@ -19,22 +19,15 @@ use Illuminate\Support\Facades\Cache;
 class SignMiddleware
 {
     /**
-     * Handle an incoming request.
-     *
      * @param  Request  $request
      * @param  \Closure  $next
+     * @param  string  $signType
      * @return mixed
      * @throws CustomException
      */
-    public function handle(Request $request, \Closure $next)
+    public function handle(Request $request, \Closure $next,$signType = 'kabel')
     {
         $param = request()->toArray();
-        // 判断是否传了类型
-        if(empty($param['sign_type'])) {// 没有传就说明是移动端的
-            $signType = config('kabel_sign.client_map')[env('APP_NAME')] ?? '';
-        } else { // 说明是服务器交互
-            $signType = $param['sign_type'] ?? '';
-        }
         // 是否校验签名
         if (config("kabel_sign.$signType.is_open")) {
             $timestamp = $param['t'] ?? '';
@@ -69,7 +62,8 @@ class SignMiddleware
             // 去掉签名
             unset($param['sign']);
             $newSign = app(SignService::class)->makeSignature($param,$signType);
-            if ($newSign != $sign) {
+            // appkey是否匹配并且签名匹配
+            if (config("kabel_sign.$signType.appkey") == $appkey && $newSign != $sign) {
                 throw new CustomException(ErrorCode::SIGN_ERROR);
             }
             // 去掉没有用的参数
@@ -77,7 +71,6 @@ class SignMiddleware
             $request->offsetUnset('sign');
             $request->offsetUnset('appkey');
             $request->offsetUnset('nonce');
-            isset( $param['sign_type']) && $request->offsetUnset('sign_type');
         }
 
         return $next($request);

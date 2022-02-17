@@ -11,6 +11,7 @@ namespace Kabel\Sign\Services;
 
 
 use Kabel\Sign\Constants\ErrorCode;
+use Kabel\Sign\Enums\ClientEnum;
 use Kabel\Sign\Exceptions\CustomException;
 use Kabel\Sign\Interfaces\SignServiceInterface;
 
@@ -24,7 +25,7 @@ class SignService implements SignServiceInterface
      * @throws CustomException
      */
     public static function setParams(array &$params, $signType = null){
-        $signType = $signType?:config("kabel_sign.default");
+        $signType = $signType ? ClientEnum::$clientMap[$signType] :config("kabel_sign.default");
         //获取appSecret
         $config = config("kabel_sign.$signType");
         if (!$config) {
@@ -34,11 +35,8 @@ class SignService implements SignServiceInterface
         $params['appkey'] = $config['app_key'];
         // 生成随机数防止重放攻击
         $params['nonce'] = app(CryptoService::class)->createRandomStr();
-        // 签名类型
-        $params['sign_type'] = $signType;
         // 签名
         $params['sign'] = (new SignService)->makeSignature($params,$signType);
-
         return $params;
     }
 

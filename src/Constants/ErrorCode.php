@@ -16,7 +16,7 @@ class ErrorCode
     public const TIMESTAME_ERROR = ['缺少参数时间戳t！',1903];
     public const SIGN_TIMEOUT = ['验签sign失效！',1905];
     public const SIGN_NOT_FOUND = ['缺少参数验签sign！',1906];
-    public const NONCE_NOT_FOUND = ['缺少随机值！',1907];
+    public const NONCE_NOT_FOUND = ['缺少生成签名需要的随机值！',1907];
     public const PARAMS_ERROR = ['参数错误！',1908];
     public const DATA_ERROR = ['数据有误！',1908];
     public const APP_KEY_ERROR = ['Appkey有误！',1908];
