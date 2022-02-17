@@ -33,5 +33,6 @@ return [
         'timeout' => env('SIGN_FRAMEWORK_TIMEOUT', 3000), // 签名过期时间 (秒)
         'app_key' => env('SIGN_FRAMEWORK_APP_KEY', ''),
         'secret' => env('SIGN_FRAMEWORK_APP_SECRET', ''),
-    ]
+    ],
+    'skip_sign_rule'=>env('SKIP_SIGN_RULE', ''),
 ];
