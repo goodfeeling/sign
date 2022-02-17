@@ -9,6 +9,7 @@
  * Api统一签名加密校验
  */
 return [
+    'default'=>  env('SIGN_DEFAULT', 'kabel'), //默认签名
     'kabel' => [ // 卡百利
         /**
          *  是否开放签名 false 不校验 true 校验
