@@ -25,7 +25,7 @@ class SignService implements SignServiceInterface
      * @throws CustomException
      */
     public static function setParams(array &$params, $signType = null){
-        $signType = $signType ? ClientEnum::$clientMap[$signType] :config("kabel_sign.default");
+        $signType = $signType ?:config("kabel_sign.default");
         //获取appSecret
         $config = config("kabel_sign.$signType");
         if (!$config) {
