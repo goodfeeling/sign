@@ -12,6 +12,8 @@ namespace Kabel\Sign\Exceptions;
 
 class SignException extends \Exception
 {
+    public bool $showOriMsg = true; // 是否显示原始异常信息
+
     public function __construct(array $errInfo)
     {
         parent::__construct($errInfo[0] ?? '', $errInfo[1] ?? '', $errInfo[2] ?? null);
