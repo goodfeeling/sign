@@ -10,6 +10,7 @@
 namespace Kabel\Sign\Services;
 
 
+use Illuminate\Support\Facades\Log;
 use Kabel\Sign\Constants\ErrorCode;
 use Kabel\Sign\Enums\ClientEnum;
 use Kabel\Sign\Exceptions\SignException;
@@ -39,6 +40,8 @@ class SignService implements SignServiceInterface
             // 签名
             $params['sign'] = (new SignService)->makeSignature($params,$signType);
         }catch (\Exception $e) {
+            Log::error($e->getMessage().$e->getTraceAsString());
+
             throw new SignException(ErrorCode::SIGN_COMPONENT_ERROR);
         }
         return $params;
@@ -71,6 +74,7 @@ class SignService implements SignServiceInterface
             }
             return strtoupper(md5($signData.$config['secret']));
         }catch (\Exception $e) {
+            Log::error($e->getMessage().$e->getTraceAsString());
             throw new SignException(ErrorCode::SIGN_COMPONENT_ERROR);
         }
     }
