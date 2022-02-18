@@ -25,18 +25,22 @@ class SignService implements SignServiceInterface
      * @throws SignException
      */
     public static function setParams(array &$params, $signType = null){
-        $signType = $signType ?:config("kabel_sign.default");
-        //获取appSecret
-        $config = config("kabel_sign.$signType");
-        if (!$config) {
-            throw new SignException(ErrorCode::SIGN_CONFIG_NOT_FOND);
+        try {
+            $signType = $signType ?:config("kabel_sign.default");
+            //获取appSecret
+            $config = config("kabel_sign.$signType");
+            if (!$config) {
+                throw new SignException(ErrorCode::SIGN_CONFIG_NOT_FOND);
+            }
+            $params['t'] = time();
+            $params['appkey'] = $config['app_key'];
+            // 生成随机数防止重放攻击
+            $params['nonce'] = app(CryptoService::class)->createRandomStr();
+            // 签名
+            $params['sign'] = (new SignService)->makeSignature($params,$signType);
+        }catch (\Exception $e) {
+            throw new SignException(ErrorCode::SIGN_COMPONENT_ERROR);
         }
-        $params['t'] = time();
-        $params['appkey'] = $config['app_key'];
-        // 生成随机数防止重放攻击
-        $params['nonce'] = app(CryptoService::class)->createRandomStr();
-        // 签名
-        $params['sign'] = (new SignService)->makeSignature($params,$signType);
         return $params;
     }
 
@@ -54,17 +58,21 @@ class SignService implements SignServiceInterface
      */
     public function makeSignature($params = array(),string $signType = 'kabel')
     {
-        if (!is_array($params)) {
-            throw new SignException(ErrorCode::PARAMS_ERROR);
+        try {
+            if (!is_array($params)) {
+                throw new SignException(ErrorCode::PARAMS_ERROR);
+            }
+            //获取appSecret
+            $config = config("kabel_sign.$signType");
+            //获取sign
+            $signData = $this->loopArraySign($params, 3986);
+            if (!$config['secret']) {
+                return false;
+            }
+            return strtoupper(md5($signData.$config['secret']));
+        }catch (\Exception $e) {
+            throw new SignException(ErrorCode::SIGN_COMPONENT_ERROR);
         }
-        //获取appSecret
-        $config = config("kabel_sign.$signType");
-        //获取sign
-        $signData = $this->loopArraySign($params, 3986);
-        if (!$config['secret']) {
-            return false;
-        }
-        return strtoupper(md5($signData.$config['secret']));
     }
 
     /**

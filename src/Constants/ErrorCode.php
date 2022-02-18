@@ -23,4 +23,5 @@ class ErrorCode
     public const CRYPTO_ERROR = ['数据解密失败！',1909];
     public const NONCE_ERROR = ['nonce is error！',1910];
     public const SIGN_CONFIG_NOT_FOND = ['请配置签名信息',1911];
+    public const SIGN_COMPONENT_ERROR = ['签名模块异常，请检查是否配置签名！',1912];
 }
