@@ -90,6 +90,9 @@ class SignService implements SignServiceInterface
         $sign = "";
         ksort($params);
         foreach ($params as $k => $v) {
+            if (empty($v)) {
+                continue;
+            }
             if (is_array($v)) {
                 $sign .= "{$k}";
                 $sign .= $this->loopArraySign($v, $rfc);
